@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <title>운빨 공격력 계산기</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .lotto-title {
+            color: #003399;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .section-title {
+            color: #003399;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 40%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        label {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        #dataInput {
+            width: 110px;
+        }
+
+        button {
+            background-color: #003399;
+            color: white;
+            padding: 7px 20px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #002266;
+        }
+
+        .results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            flex-basis: 48%;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e6f2ff;
+            border-radius: 4px;
+        }
+
+        #firstPrize,
+        #secondPrize,
+        #thirdPrize,
+        #fourthPrize,
+        #fifthPrize {
+            font-weight: bold;
+            color: #003399;
+        }
+
+        #firstPrize:hover::after,
+        #secondPrize:hover::after,
+        #thirdPrize:hover::after,
+        #fourthPrize:hover::after,
+        #fifthPrize:hover::after {
+            content: attr(data-prize);
+            position: absolute;
+            background-color: #003399;
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+        const strengthPotion = [0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20, 0.21];
+        const moneyGun = [0.0064, 0.007, 0.0077, 0.0084, 0.0091, 0.0098, 0.0105, 0.0112, 0.0119, 0.0126, 0.0133, 0.014, 0.0147];
+
+        function calculateAttackPower() {
+            var mythAttackUpgrade = parseInt(document.getElementById('mythAttackUpgrade').value);
+            var basicAttackPower = parseInt(document.getElementById('basicAttackPower').value);
+            var strengthPotionLv = strengthPotion[parseInt(document.getElementById('strengthPotionLv').value)];
+            var money = parseInt(document.getElementById('money').value);
+            var moneyGunLv = moneyGun[parseInt(document.getElementById('moneyGunLv').value)];
+            var increaseAll = parseInt(document.getElementById('increaseAll').value);
+
+            var finalAttackPower = (1 / 2) * (1 + mythAttackUpgrade) * (basicAttackPower * (1 + strengthPotionLv * 2)) * (1 + money * moneyGunLv / 100 + increaseAll / 100);
+            
+            console.log(1 / 2 * (1 + mythAttackUpgrade));
+            console.log((1 + strengthPotionLv * 2));
+            console.log(1 + money * moneyGunLv / 100 + increaseAll / 100);
+            
+            document.getElementById('result').innerText = '';
+            document.getElementById('result').innerText += '추가 공격력 : ' + (finalAttackPower - basicAttackPower);
+        }
+
+        function highlightWinningNumbers() {
+            var winningNumbersInput = document.getElementById('winningNumbers');
+            var winningNumbers = winningNumbersInput.value.split(', ');
+            var resultDiv = document.getElementById('result');
+            var resultNumbers = resultDiv.innerText.split('\n');
+
+            resultNumbers.forEach(function (number) {
+                var numbers = number.split(', ');
+                var highlightedNumbers = [];
+                numbers.forEach(function (num) {
+                    if (winningNumbers.includes(num)) {
+                        highlightedNumbers.push('<span style="color: red;">' + num + '</span>');
+                    } else {
+                        highlightedNumbers.push(num);
+                    }
+                });
+                var highlightedNumber = highlightedNumbers.join(', ');
+                resultDiv.innerHTML = resultDiv.innerHTML.replace(number, highlightedNumber + ' ');
+            });
+        }
+
+        function uncheckAll() {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+        }
+
+        function increaseQuantity(quantity) {
+            totalQuantity += quantity;
+            document.getElementById('total').innerText = totalQuantity.toLocaleString() + '회' + ' / ' + (totalQuantity * 1000).toLocaleString() + '원';
+        }
+
+
+        function checkPrize(winningNumbers, lottoNumbers) {
+            var matchedNumbers = 0;
+            for (var i = 0; i < lottoNumbers.length; i++) {
+                if (winningNumbers.includes(lottoNumbers[i].toString())) {
+                    matchedNumbers++;
+                }
+            }
+
+            if (matchedNumbers === 6) {
+                return 1;
+            } else if (matchedNumbers === 5) {
+                var random = Math.random();
+                if (random < 1 / 38) {
+                    return 2;
+                } else {
+                    return 3;
+                }
+            } else if (matchedNumbers === 4) {
+                return 4;
+            } else if (matchedNumbers === 3) {
+                return 5;
+            } else {
+                return 0;
+            }
+        }
+
+        function calculateWinnings() {
+            var firstPrizeCount = parseInt(document.getElementById('firstPrize').innerText);
+            var secondPrizeCount = parseInt(document.getElementById('secondPrize').innerText);
+            var thirdPrizeCount = parseInt(document.getElementById('thirdPrize').innerText);
+            var fourthPrizeCount = parseInt(document.getElementById('fourthPrize').innerText);
+            var fifthPrizeCount = parseInt(document.getElementById('fifthPrize').innerText);
+
+            var totalWinnings = (firstPrizeCount * 2404951807) + (secondPrizeCount * 60398334) + (thirdPrizeCount * 1428736) + (fourthPrizeCount * 50000) + (fifthPrizeCount * 5000);
+
+            document.getElementById('winnings').innerText = totalWinnings.toLocaleString() + '원';
+        }
+
+        function calculateReturnRate() {
+            var totalWinnings = calculateTotalWinnings();
+            var totalSpent = totalQuantity * 1000;
+            var returnRate = (totalWinnings / totalSpent) * 100;
+            document.getElementById('returnRate').innerText = returnRate + '%';
+        }
+
+        function calculateTotalWinnings() {
+            var firstPrizeCount = parseInt(document.getElementById('firstPrize').innerText);
+            var secondPrizeCount = parseInt(document.getElementById('secondPrize').innerText);
+            var thirdPrizeCount = parseInt(document.getElementById('thirdPrize').innerText);
+            var fourthPrizeCount = parseInt(document.getElementById('fourthPrize').innerText);
+            var fifthPrizeCount = parseInt(document.getElementById('fifthPrize').innerText);
+
+            var totalWinnings = (firstPrizeCount * 2404951807) + (secondPrizeCount * 60398334) + (thirdPrizeCount * 1428736) + (fourthPrizeCount * 50000) + (fifthPrizeCount * 5000);
+
+            return totalWinnings;
+        }
+
+        function autoGenerateAndPrintLottoNumbers() {
+            var quantity = parseInt(document.getElementById('quantity').value);
+            document.getElementById('result').innerText = '';
+            increaseQuantity(quantity);
+
+            var checkbox = document.querySelector('input[type="checkbox"]:checked[value="hideNumbers"]');
+            var existPrize = false;
+
+            for (var k = 0; k < quantity; k++) {
+                var lotNumbersAndPrize = generateLottoNumbers();
+                var lottoNumbers = lotNumbersAndPrize.lottoNumbers;
+                var prize = lotNumbersAndPrize.prize;
+
+                lottoNumbers.sort(function (a, b) {
+                    return a - b;
+                });
+
+                //console.log(prize, lottoNumbers);
+                //if (prize === 1 || prize === 2 || prize === 3 || prize === 4 || prize === 5) {
+                //    stopGenerateAndPrintLottoNumbers();
+                //}
+
+
+                if (!checkbox) {
+                    document.getElementById('result').innerText += lottoNumbers.join(', ') + ' | ';
+                    if ((k + 1) % 5 === 0) {
+                        document.getElementById('result').innerText += '\n';
+                    }
+                }
+            }
+            if (!checkbox) {
+                highlightWinningNumbers();
+            }
+            if (stopGenerate) {
+                setTimeout(autoGenerateAndPrintLottoNumbers, 0);
+            }
+        }
+
+        function stopGenerateAndPrintLottoNumbers() {
+            stopGenerate = false;
+            // 0.1초 후에 stopGenerate를 true로 변경
+            setTimeout(function () {
+                stopGenerate = true;
+            }, 100);
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="lotto-title">운빨 공격력 계산기</h1>
+        <form>
+            <div class="section">
+                <h2 class="section-title">데이터 입력</h2>
+                <div>
+                    <label id="dataInput" for="mythAttackUpgrade">신화 공업 :</label>
+                    <input type="number" id="mythAttackUpgrade" name="mythAttackUpgrade" min="1" max="10000" value="1">
+                </div>
+                <div>
+                    <label id="dataInput" for="basicAttackPower">기본 공격력 :</label>
+                    <input type="number" id="basicAttackPower" name="basicAttackPower" min="1" max="10000" value="1">
+                </div>
+                <div>
+                    <label id="dataInput" for="strengthPotionLv">힘의 물약 레벨 :</label>
+                    <input type="number" id="strengthPotionLv" name="strengthPotionLv" min="1" max="10000" value="1">
+                </div>
+                <div>
+                    <label id="dataInput" for="money">돈 :</label>
+                    <input type="number" id="money" name="money" min="1" max="10000" value="1">
+                </div>
+                <div>
+                    <label id="dataInput" for="moneyGunLv">머니건 레벨 :</label>
+                    <input type="number" id="moneyGunLv" name="moneyGunLv" min="1" max="10000" value="1">
+                </div>
+                <div>
+                    <label id="dataInput" for="increaseAll">모 아 공 :</label>
+                    <input type="number" id="increaseAll" name="increaseAll" min="1" max="10000" value="1">
+                    <button type="button" onclick="calculateAttackPower()">계산</button>
+
+                </div>
+               
+            </div>
+
+            <div id="result"></div>
+        </form>
+    </div>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+
+</html>
