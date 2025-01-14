@@ -140,7 +140,7 @@
             console.log(1 + money * moneyGunLv / 100 + increaseAll / 100);
             
             document.getElementById('result').innerText = '';
-            document.getElementById('result').innerText += '추가 공격력 : ' + (finalAttackPower - basicAttackPower);
+            document.getElementById('result').innerText += '추가 공격력 : ' + (Math.floor(finalAttackPower - basicAttackPower));
         }
 
         function highlightWinningNumbers() {
