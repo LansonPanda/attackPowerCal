@@ -133,7 +133,7 @@
             var moneyGunLv = moneyGun[parseInt(document.getElementById('moneyGunLv').value)];
             var increaseAll = parseInt(document.getElementById('increaseAll').value);
 
-            var finalAttackPower = (1 / 2) * (mythAttackUpgrade) * (basicAttackPower * (1 + strengthPotionLv * 2)) * (1 + money * moneyGunLv / 100 + increaseAll / 100);
+            var finalAttackPower = (1 / 2) * (1 + mythAttackUpgrade) * (basicAttackPower * (1 + strengthPotionLv * 2)) * (1 + money * moneyGunLv / 100 + increaseAll / 100);
             
             console.log(1 / 2 * (1 + mythAttackUpgrade));
             console.log((1 + strengthPotionLv * 2));
