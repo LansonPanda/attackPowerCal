@@ -155,10 +155,10 @@
             if (guildLevel >= 9) {
                 finalAttackPower *= 1.02;
             }
-
+            
             // 평균오차 1.01퍼 적용 (임시)
-            tempBuff = 1.01;
-            finalAttackPower *= tempBuff;
+            //tempBuff = 1.01;
+            //finalAttackPower *= tempBuff;
 
             document.getElementById('result').innerText = '';
             document.getElementById('result').innerText += '추가 공격력 : ' + (Math.floor(finalAttackPower - basicAttackPower));
