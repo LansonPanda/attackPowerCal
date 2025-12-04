@@ -122,8 +122,8 @@
         }
     </style>
     <script>
-        const strengthPotion = [0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20, 0.21];
-        const moneyGun = [0.0064, 0.007, 0.0077, 0.0084, 0.0091, 0.0098, 0.0105, 0.0112, 0.0119, 0.0126, 0.0133, 0.014, 0.0147];
+        const strengthPotion = [0, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20];
+        const moneyGun = [0, 0.007, 0.0077, 0.0084, 0.0091, 0.0098, 0.0105, 0.0112, 0.0119, 0.0126, 0.0133, 0.014];
 
         function calculateAttackPower() {
             var mythAttackUpgrade = parseInt(document.getElementById('mythAttackUpgrade').value);
@@ -132,13 +132,32 @@
             var money = parseInt(document.getElementById('money').value);
             var moneyGunLv = moneyGun[parseInt(document.getElementById('moneyGunLv').value)];
             var increaseAll = parseInt(document.getElementById('increaseAll').value);
+            var petmythaddedPU = parseInt(document.getElementById('petmythaddedPU').value); //장착펫공증+펫종합렙공증+영웅종합렙공증
+            var increaseSelf = parseInt(document.getElementById('increaseSelf').value); // 신화자체추공
+            var diablob = parseInt(document.getElementById('diablob').value); // 다이아 블롭
 
-            var finalAttackPower = (1 / 2) * (1 + mythAttackUpgrade) * (basicAttackPower * (1 + strengthPotionLv * 2)) * (1 + money * moneyGunLv / 100 + increaseAll / 100);
             
-            console.log(1 / 2 * (1 + mythAttackUpgrade));
-            console.log((1 + strengthPotionLv * 2));
+
+            var finalAttackPower = basicAttackPower * (1 / 2) * (1 + mythAttackUpgrade) * (1 + strengthPotionLv * 2 + petmythaddedPU / 100 + diablob / 100) * (1 + money * moneyGunLv / 100 + increaseAll / 100 + increaseSelf / 100);
+            
+            console.log(mythAttackUpgrade + '신화공업');
+            console.log(moneyGunLv + '머니건');
+            console.log(strengthPotionLv + '힘포션');
+            console.log(petmythaddedPU + '펫신화종합');
+            console.log(basicAttackPower + '기본공격력');
+            console.log(money + '돈');
+            console.log(increaseAll + '모아공');
             console.log(1 + money * moneyGunLv / 100 + increaseAll / 100);
-            
+            console.log(diablob + '다이아 블롭');
+
+            // 길드 버프 적용 영웅 피해 2퍼 (임시 버프 수정가능성ㅇ)
+            var guildBuff = 1.02;
+            finalAttackPower *= guildBuff;
+
+            // 평균오차 1.01퍼 적용 (임시)
+            tempBuff = 1.01;
+            finalAttackPower *= tempBuff;
+
             document.getElementById('result').innerText = '';
             document.getElementById('result').innerText += '추가 공격력 : ' + (Math.floor(finalAttackPower - basicAttackPower));
         }
@@ -289,35 +308,49 @@
         <form>
             <div class="section">
                 <h2 class="section-title">데이터 입력</h2>
-                <div>
-                    <label id="dataInput" for="mythAttackUpgrade">신화 공업 :</label>
-                    <input type="number" id="mythAttackUpgrade" name="mythAttackUpgrade" min="1" max="10000" value="1">
-                </div>
+                <small>!모든 공증은 퍼센트값으로 입력!</small>
                 <div>
                     <label id="dataInput" for="basicAttackPower">기본 공격력 :</label>
                     <input type="number" id="basicAttackPower" name="basicAttackPower" min="1" max="10000" value="1">
                 </div>
                 <div>
-                    <label id="dataInput" for="strengthPotionLv">힘의 물약 레벨 :</label>
-                    <input type="number" id="strengthPotionLv" name="strengthPotionLv" min="1" max="10000" value="1">
+                    <label id="dataInput" for="mythAttackUpgrade">신화 공업 레벨:</label>
+                    <input type="number" id="mythAttackUpgrade" name="mythAttackUpgrade" min="1" max="10000" value="1">
                 </div>
                 <div>
                     <label id="dataInput" for="money">돈 :</label>
                     <input type="number" id="money" name="money" min="1" max="10000" value="1">
                 </div>
                 <div>
+                    <label id="dataInput" for="strengthPotionLv">힘의 물약 레벨 :</label>
+                    <input type="number" id="strengthPotionLv" name="strengthPotionLv" min="1" max="10000" value="1">
+                </div>
+                <div>
                     <label id="dataInput" for="moneyGunLv">머니건 레벨 :</label>
                     <input type="number" id="moneyGunLv" name="moneyGunLv" min="1" max="10000" value="1">
                 </div>
                 <div>
-                    <label id="dataInput" for="increaseAll">모 아 공 :</label>
-                    <input type="number" id="increaseAll" name="increaseAll" min="1" max="10000" value="1">
-                    <button type="button" onclick="calculateAttackPower()">계산</button>
-
+                    <label id="dataInput" for="petmythaddedPU">펫신화총공증 :</label>
+                    <input type="number" id="petmythaddedPU" name="petmythaddedPU" min="1" max="10000" value="1">
+                    <small>장착펫공증 + 펫종합렙공증 + 영웅종합렙공증</small>
                 </div>
-               
+                <div>
+                    <label id="dataInput" for="increaseSelf">패시브공증 :</label>
+                    <input type="number" id="increaseSelf" name="increaseSelf" min="1" max="10000" value="1">
+                    <small>ex) 헤일리 강화, 불멸자체 공증 등</small>
+                </div>
+                <div>
+                    <label id="dataInput" for="increaseAll">모든아군공증 :</label>
+                    <input type="number" id="increaseAll" name="increaseAll" min="1" max="10000" value="1">
+                </div>
+                <div>
+                    <label id="dataInput" for="diablob">다이아 블롭 :</label>
+                    <input type="number" id="diablob" name="diablob" min="1" max="10000" value="1">
+                    <small>다이아 블롭으로 인한 추가 공격력 퍼센트</small>
+                    <br>
+                    <button type="button" onclick="calculateAttackPower()">계산</button>
+                </div>
             </div>
-
             <div id="result"></div>
         </form>
     </div>
