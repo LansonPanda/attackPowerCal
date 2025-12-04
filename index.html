@@ -135,6 +135,7 @@
             var petmythaddedPU = parseInt(document.getElementById('petmythaddedPU').value); //장착펫공증+펫종합렙공증+영웅종합렙공증
             var increaseSelf = parseInt(document.getElementById('increaseSelf').value); // 신화자체추공
             var diablob = parseInt(document.getElementById('diablob').value); // 다이아 블롭
+            var guildLevel = parseInt(document.getElementById('guildLevel').value); // 길드레벨
 
             
 
@@ -150,9 +151,10 @@
             console.log(1 + money * moneyGunLv / 100 + increaseAll / 100);
             console.log(diablob + '다이아 블롭');
 
-            // 길드 버프 적용 영웅 피해 2퍼 (임시 버프 수정가능성ㅇ)
-            var guildBuff = 1.02;
-            finalAttackPower *= guildBuff;
+            // 길드 버프 적용 영웅 피해 2퍼 (임시 버프 수정가능성ㅇ) guildLevel이 9이상 인경우 1.02배
+            if (guildLevel >= 9) {
+                finalAttackPower *= 1.02;
+            }
 
             // 평균오차 1.01퍼 적용 (임시)
             tempBuff = 1.01;
@@ -344,6 +346,10 @@
                     <input type="number" id="increaseAll" name="increaseAll" min="1" max="10000" value="0">
                 </div>
                 <div>
+                    <label id="dataInput" for="guildLevel">길드레벨 :</label>
+                    <input type="number" id="guildLevel" name="guildLevel" min="1" max="10000" value="0">
+                </div>
+                <div>
                     <label id="dataInput" for="diablob">다이아 블롭 :</label>
                     <input type="number" id="diablob" name="diablob" min="1" max="10000" value="0">
                     <small>다이아 블롭으로 인한 추가 공격력 퍼센트</small>
@@ -395,4 +401,3 @@
 </body>
 
 </html>
-
