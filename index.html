@@ -132,9 +132,9 @@
             var money = parseInt(document.getElementById('money').value);
             var moneyGunLv = moneyGun[parseInt(document.getElementById('moneyGunLv').value)];
             var increaseAll = parseInt(document.getElementById('increaseAll').value);
-            var petmythaddedPU = parseInt(document.getElementById('petmythaddedPU').value); //장착펫공증+펫종합렙공증+영웅종합렙공증
+            var petmythaddedPU = parseFloat(document.getElementById('petmythaddedPU').value); //장착펫공증+펫종합렙공증+영웅종합렙공증
             var increaseSelf = parseInt(document.getElementById('increaseSelf').value); // 신화자체추공
-            var diablob = parseInt(document.getElementById('diablob').value); // 다이아 블롭
+            var diablob = parseFloat(document.getElementById('diablob').value); // 다이아 블롭
             var guildLevel = parseInt(document.getElementById('guildLevel').value); // 길드레벨
 
             
@@ -401,4 +401,3 @@
 </body>
 
 </html>
-
